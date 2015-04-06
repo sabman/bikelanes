@@ -159,6 +159,7 @@ $(document).ready(function () {
     //load a city recursive wrapper to load them in order/speed up mobile loading perception
     function loadCity(cities, windowWidth) {
       if (cities.length){
+        currentLength = cities.length
         addDivs(windowWidth)
         mapOptions = setMapOptions(cities[0][1],cities[0][2])
         
@@ -174,21 +175,39 @@ $(document).ready(function () {
         mapOptions);
         carMap.setOptions({styles: carStyles});
 
+        var bikeLoaded = false
+        var carLoaded = false
+
         //usually the bike map will finish before the car map, call the next city to load
         google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
+          bikeLoaded = true;
           google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
-            cities.splice(0, 1);
-            loadCity(cities, windowWidth)
+            if (cities.length -1 === currentLength - 1) {
+              cities.splice(0, 1);
+              loadCity(cities, windowWidth);
+            }
           });
         });
 
         //sometimes car map loads first, call the next city to load
         google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
+          carLoaded = true;
           google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
-            cities.splice(0, 1);
-            loadCity(cities, windowWidth)
+            if (cities.length -1 === currentLength - 1) {
+              cities.splice(0, 1);
+              loadCity(cities, windowWidth);
+            }
           });
         });
+
+        //sometimes a map will not load, call the next city to load
+        setTimeout(function(){ 
+          if (!bikeLoaded || !carLoaded) {
+            cities.splice(0, 1);
+            loadCity(cities, windowWidth);
+          } 
+        }, 2000);
+
       } else {
         return
       }
