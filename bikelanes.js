@@ -149,6 +149,7 @@ $(document).ready(function () {
       var mapOptions = {
         center: { lat: lat, lng: lng},
         zoom: 12,
+        disableDoubleClickZoom: true,
         disableDefaultUI: true,
         scrollwheel: false,
         draggable: false,
