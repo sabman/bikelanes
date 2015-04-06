@@ -157,20 +157,37 @@ $(document).ready(function () {
     }
 
     $(cities).each(function(index) {
-      $("#mainSqueeze").append(
-      '<div class="row textrow row-centered">'+ 
-        '<div class="col-xs-11 col-md-11 col-centered title"><h2>'+cities[index][0]+'</h2></div>'+
-        '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
-      '</div>'+ 
-      '<div class="row maprow row-centered">'+
-        '<div class="col-xs-5 col-md-5 col-centered" id="bike-'+cities[index][0]+'"></div>'+
-        '<div class="col-xs-1 col-md-1 col-centered"></div>'+
-        '<div class="col-xs-5 col-md-5 col-centered" id="car-'+cities[index][0]+'"></div>'+
-      '</div>'+
-      '<div class="row textrow row-centered">'+ 
-        '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
-      '</div>'
-      );
+      if (window.innerWidth >= 768){
+        $("#mainSqueeze").append(
+        '<div class="row textrow row-centered">'+ 
+          '<div class="col-xs-11 col-md-11 col-centered title"><h2>'+cities[index][0]+'</h2></div>'+
+          '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
+        '</div>'+ 
+        '<div class="row maprow row-centered">'+
+          '<div class="col-xs-5 col-md-5 col-centered" id="bike-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-1 col-md-1 col-centered"></div>'+
+          '<div class="col-xs-5 col-md-5 col-centered" id="car-'+cities[index][0]+'"></div>'+
+        '</div>'+
+        '<div class="row textrow row-centered">'+ 
+          '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
+        '</div>'
+        );
+      } else {
+        $("#mainSqueeze").append(
+        '<div class="row textrow row-centered">'+ 
+          '<div class="col-xs-11 col-centered title"><h2>'+cities[index][0]+'</h2></div>'+
+          '<div class="col-xs-11 col-centered title"></div>'+
+        '</div>'+ 
+        '<div class="row maprowmobile row-centered">'+
+          '<div class="col-xs-11 col-centered" id="bike-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-2  col-centered title"></div>'+
+          '<div class="col-xs-11 col-centered" id="car-'+cities[index][0]+'"></div>'+
+        '</div>'+
+        '<div class="row textrow row-centered">'+ 
+          '<div class="col-xs-11 col-centered title"></div>'+
+        '</div>'
+        );
+      }
       mapOptions = setMapOptions(cities[index][1],cities[index][2])
       
       bikeMap = new google.maps.Map(document.getElementById('bike-'+cities[index][0]),
