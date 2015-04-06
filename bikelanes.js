@@ -156,6 +156,7 @@ $(document).ready(function () {
       return mapOptions
     }
 
+    //create maps for each city
     $(cities).each(function(index) {
       if (window.innerWidth >= 768){
         $("#mainSqueeze").append(
@@ -190,12 +191,14 @@ $(document).ready(function () {
       }
       mapOptions = setMapOptions(cities[index][1],cities[index][2])
       
+      //create the bike map
       bikeMap = new google.maps.Map(document.getElementById('bike-'+cities[index][0]),
       mapOptions);
       bikeMap.setOptions({styles: bikeStyles});
       var bikeLayer = new google.maps.BicyclingLayer();
       bikeLayer.setMap(bikeMap);
 
+      //create the car map
       var carMap = new google.maps.Map(document.getElementById('car-'+cities[index][0]),
       mapOptions);
       carMap.setOptions({styles: carStyles});
