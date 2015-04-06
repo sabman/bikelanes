@@ -156,18 +156,47 @@ $(document).ready(function () {
       return mapOptions
     }
 
-    //create maps for each city
-    $(cities).each(function(index) {
+    //load a city recursive wrapper to load them in order/speed up mobile loading perception
+    function loadCity(cities, windowWidth) {
+      if (cities.length){
+        addDivs(windowWidth)
+        mapOptions = setMapOptions(cities[0][1],cities[0][2])
+        
+        //make the bike map
+        bikeMap = new google.maps.Map(document.getElementById('bike-'+cities[0][0]),
+        mapOptions);
+        bikeMap.setOptions({styles: bikeStyles});
+        var bikeLayer = new google.maps.BicyclingLayer();
+        bikeLayer.setMap(bikeMap);
+
+        //create the car map
+        var carMap = new google.maps.Map(document.getElementById('car-'+cities[0][0]),
+        mapOptions);
+        carMap.setOptions({styles: carStyles});
+
+        google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
+          google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
+            console.log(cities[0][0])
+            cities.splice(0, 1);
+            loadCity(cities, windowWidth)
+          });
+        });
+      } else {
+        return
+      }
+    }
+
+    function addDivs(windowWidth) {
       if (window.innerWidth >= 768){
         $("#mainSqueeze").append(
         '<div class="row textrow row-centered">'+ 
-          '<div class="col-xs-11 col-md-11 col-centered title"><h2>'+cities[index][0]+'</h2></div>'+
+          '<div class="col-xs-11 col-md-11 col-centered title"><h2>'+cities[0][0]+'</h2></div>'+
           '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
         '</div>'+ 
         '<div class="row maprow row-centered">'+
-          '<div class="col-xs-5 col-md-5 col-centered" id="bike-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-5 col-md-5 col-centered" id="bike-'+cities[0][0]+'"></div>'+
           '<div class="col-xs-1 col-md-1 col-centered"></div>'+
-          '<div class="col-xs-5 col-md-5 col-centered" id="car-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-5 col-md-5 col-centered" id="car-'+cities[0][0]+'"></div>'+
         '</div>'+
         '<div class="row textrow row-centered">'+ 
           '<div class="col-xs-11 col-md-11 col-centered title"></div>'+
@@ -176,35 +205,25 @@ $(document).ready(function () {
       } else {
         $("#mainSqueeze").append(
         '<div class="row textrow row-centered">'+ 
-          '<div class="col-xs-11 col-centered title"><h2>'+cities[index][0]+'</h2></div>'+
+          '<div class="col-xs-11 col-centered title"><h2>'+cities[0][0]+'</h2></div>'+
           '<div class="col-xs-11 col-centered title"></div>'+
         '</div>'+ 
         '<div class="row maprowmobile row-centered">'+
-          '<div class="col-xs-11 col-centered" id="bike-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-11 col-centered" id="bike-'+cities[0][0]+'"></div>'+
           '<div class="col-xs-2  col-centered title"></div>'+
-          '<div class="col-xs-11 col-centered" id="car-'+cities[index][0]+'"></div>'+
+          '<div class="col-xs-11 col-centered" id="car-'+cities[0][0]+'"></div>'+
         '</div>'+
         '<div class="row textrow row-centered">'+ 
           '<div class="col-xs-11 col-centered title"></div>'+
         '</div>'
         );
       }
-      mapOptions = setMapOptions(cities[index][1],cities[index][2])
-      
-      //create the bike map
-      bikeMap = new google.maps.Map(document.getElementById('bike-'+cities[index][0]),
-      mapOptions);
-      bikeMap.setOptions({styles: bikeStyles});
-      var bikeLayer = new google.maps.BicyclingLayer();
-      bikeLayer.setMap(bikeMap);
+    }
 
-      //create the car map
-      var carMap = new google.maps.Map(document.getElementById('car-'+cities[index][0]),
-      mapOptions);
-      carMap.setOptions({styles: carStyles});
-
-    })
-
+  //run the above
+  windowWidth = window.innerWidth;
+  loadCity(cities, windowWidth)
+  
   }
   google.maps.event.addDomListener(window, 'load', initialize);
 });
