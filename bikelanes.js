@@ -176,7 +176,6 @@ $(document).ready(function () {
 
         google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
           google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
-            console.log(cities[0][0])
             cities.splice(0, 1);
             loadCity(cities, windowWidth)
           });
