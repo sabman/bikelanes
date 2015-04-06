@@ -174,8 +174,17 @@ $(document).ready(function () {
         mapOptions);
         carMap.setOptions({styles: carStyles});
 
+        //usually the bike map will finish before the car map, call the next city to load
         google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
           google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
+            cities.splice(0, 1);
+            loadCity(cities, windowWidth)
+          });
+        });
+
+        //sometimes car map loads first, call the next city to load
+        google.maps.event.addListenerOnce(carMap, 'tilesloaded', function(){
+          google.maps.event.addListenerOnce(bikeMap, 'tilesloaded', function(){
             cities.splice(0, 1);
             loadCity(cities, windowWidth)
           });
